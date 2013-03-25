@@ -17,7 +17,7 @@ import sqlalchemy as sa
 def upgrade():
     op.create_table(
         'historical_prices',
-        sa.Column('symbol', sa.String(10)),
+        sa.Column('symbol', sa.String(10), nullable=False),
         sa.Column('date', sa.DateTime),
         sa.Column('open', sa.Numeric(12, 4)),
         sa.Column('high', sa.Numeric(12, 4)),
