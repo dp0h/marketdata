@@ -15,8 +15,18 @@ import sqlalchemy as sa
 
 
 def upgrade():
-    pass
+    op.create_table(
+        'historical_prices',
+        sa.Column('symbol', sa.String(10)),
+        sa.Column('date', sa.DateTime),
+        sa.Column('open', sa.Numeric(12, 4)),
+        sa.Column('high', sa.Numeric(12, 4)),
+        sa.Column('low', sa.Numeric(12, 4)),
+        sa.Column('close', sa.Numeric(12, 4)),
+        sa.Column('volume', sa.Integer),
+        sa.Column('adj_close', sa.Numeric(12, 4))
+        )
 
 
 def downgrade():
-    pass
+    op.drop_table('historical_prices')
