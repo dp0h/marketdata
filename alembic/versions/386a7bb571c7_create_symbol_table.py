@@ -15,8 +15,11 @@ import sqlalchemy as sa
 
 
 def upgrade():
-    pass
+    op.create_table(
+        'symbol',
+        sa.Column('name', sa.String(10), nullable=False)
+        )
 
 
 def downgrade():
-    pass
+    op.drop_table('symbol')
