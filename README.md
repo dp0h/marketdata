@@ -8,3 +8,7 @@ Library for working with Market Data
 - db create tool
 - module to retrieve market data and put to db
 - module to load market data to pandas objects
+
+# DB creation
+alembic upgrade head
+
