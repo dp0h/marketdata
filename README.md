@@ -10,7 +10,8 @@ Library for working with Market Data
 - module to load market data to pandas objects
 
 # DB creation
-alembic upgrade head
+import table_def
+table_def.create_all()
 
 # virtualenv setup
 virtualenv --distribute .
