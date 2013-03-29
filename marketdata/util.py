@@ -4,7 +4,7 @@ Utility functions
 '''
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from table_def import Symbol
+from table_def import Symbol, HistoricalPrice
 
 
 def _create_session():
@@ -14,9 +14,9 @@ def _create_session():
 
 
 def add_symbols(symbols):
-    with _create_session() as session:
-        session.add_all([Symbol(x) for x in symbols])
-        session.commit()
+    session = _create_session()
+    session.add_all([Symbol(x) for x in symbols])
+    session.commit()
 
 
 def remove_symbols(symbols):
@@ -27,7 +27,8 @@ def remove_symbols(symbols):
     session.commit()
 
 
-def list_symbols():
+def symbols():
     session = _create_session()
     for s in session.query(Symbol):
-        yield s.Name
+        yield s.name
+
