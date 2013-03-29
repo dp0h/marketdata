@@ -4,7 +4,7 @@ Utility functions
 '''
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from table_def import Symbol, HistoricalPrice
+from schema import Symbol, HistoricalPrice
 
 
 def _create_session():

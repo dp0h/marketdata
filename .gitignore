@@ -41,3 +41,7 @@ include/
 # Sqlite db
 *.db
 
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+

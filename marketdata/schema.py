@@ -35,15 +35,15 @@ class HistoricalPrice(Base):
     adj_close = Column(Numeric(12, 2))
 
     def __init__(self, date, symbol, open, high, low, close, volume, adj_close):
-       self.date = date
-       self.symbol = symbol
-       self.open = open
-       self.high = high
-       self.low = low
-       self.close = close
-       self.volume = volume
-       self.adj_close = adj_close
+        self.date = date
+        self.symbol = symbol
+        self.open = open
+        self.high = high
+        self.low = low
+        self.close = close
+        self.volume = volume
+        self.adj_close = adj_close
 
 
-def create_all():
+def create():
     Base.metadata.create_all(engine)
