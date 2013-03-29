@@ -12,3 +12,8 @@ Library for working with Market Data
 # DB creation
 alembic upgrade head
 
+# virtualenv setup
+virtualenv --distribute .
+source bin/activate
+pip install -r requirements.txt
+
