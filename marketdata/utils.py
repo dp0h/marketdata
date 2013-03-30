@@ -31,4 +31,3 @@ def symbols():
     session = _create_session()
     for s in session.query(Symbol):
         yield s.name
-
