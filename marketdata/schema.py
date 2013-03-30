@@ -20,6 +20,9 @@ class Symbol(Base):
     def __init__(self, name):
         self.name = name
 
+    def __repr__(self):
+        return '<Symbol (%s)>' % self.name
+
 
 class HistoricalPrice(Base):
     __tablename__ = 'historical_prices'
@@ -42,6 +45,9 @@ class HistoricalPrice(Base):
         self.close = close
         self.volume = volume
         self.adj_close = adj_close
+
+    def __repr__(self):
+        return '<HistoricalPrice (%s, %s, %f, %f, %f, %f, %d, %f)>' % (self.date.strftime('%Y-%m-%d'), self.symbol, self.open, self.high, self.low, self.close, self.volume, self.adj_close)
 
 
 def create():

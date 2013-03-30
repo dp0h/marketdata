@@ -23,4 +23,5 @@ def fetch_market_data(symbol, from_date, to_date):
         data = [(datetime.strptime(x[0], '%Y-%m-%d'), float(x[1]), float(x[2]), float(x[3]), float(x[4]), int(x[5]), float(x[6])) for x in data]
         return (True, data)
     except Exception as e:
+        print(e)
         return (False, e)
