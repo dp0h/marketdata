@@ -24,9 +24,8 @@ class Symbol(Base):
 class HistoricalPrice(Base):
     __tablename__ = 'historical_prices'
 
-    id = Column(Integer, primary_key=True)
-    date = Column(DateTime)
-    symbol = Column(String)
+    date = Column(DateTime, primary_key=True)
+    symbol = Column(String, primary_key=True)
     open = Column(Numeric(12, 2))
     high = Column(Numeric(12, 2))
     low = Column(Numeric(12, 2))

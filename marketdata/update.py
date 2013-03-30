@@ -10,13 +10,10 @@ from schema import Symbol, HistoricalPrice
 import yahoo
 
 
-def _parse_date(date):
-    pass
-
-
 def update_marketdata():
-    session = sessionmaker(bind=schema.engine).Session()
+    session = sessionmaker(bind=schema.engine)()
     symbols = session.query(Symbol)
+    symbols = [x.name for x in symbols]
     from_date = datetime.now() - timedelta(days=365)  # TODO: change this later
     to_date = datetime.now() + timedelta(days=2)  # use a future date since there might be issues with timezones
     for symbol in symbols:
@@ -26,8 +23,4 @@ def update_marketdata():
             session.commit()
         else:
             print('Failed updating symbol %s' % symbol)
-
-
-    # 2. get latest data from DB
-    # 3. fetch required data from yahoo
-    # 4. put data to DB
+    #TODO: 2. get latest date from DB
