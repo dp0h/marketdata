@@ -2,6 +2,7 @@
 '''
 Yahoo Market Data API wrappers
 '''
+from __future__ import print_function
 import urllib
 import urllib2
 from datetime import datetime
