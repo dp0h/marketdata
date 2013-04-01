@@ -6,6 +6,8 @@ from __future__ import print_function
 from sqlalchemy.orm import sessionmaker
 import schema
 from schema import HistoricalPrice
+import numpy
+import pandas
 
 
 class Column:
@@ -26,6 +28,9 @@ def get_marketdata(symbol, from_date, to_date, columns):
         filter(HistoricalPrice.symbol == symbol).\
         filter(HistoricalPrice.date >= from_date).\
         filter(HistoricalPrice.date <= to_date)
+    data = None
+    dates = []
     for x in query_result:
-        print (x)
-    # 2. regurn as pandas stuff
+        dates.append(x[0])
+        data = numpy.vstack([data, x[1:]]) if data is not None else numpy.array(x[1:])
+    return pandas.DataFrame(data, index=dates)
