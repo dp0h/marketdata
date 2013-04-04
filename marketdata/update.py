@@ -16,7 +16,9 @@ def update_marketdata():
     Fetch latest market data and upate it in db
     '''
     session = sessionmaker(bind=schema.engine)()
-    query_result = session.query(Symbol, func.max(HistoricalPrice.date)).outerjoin(HistoricalPrice, Symbol.name == HistoricalPrice.symbol).group_by(Symbol)
+    query_result = session.query(Symbol, func.max(HistoricalPrice.date)).\
+        outerjoin(HistoricalPrice, Symbol.name == HistoricalPrice.symbol).\
+        group_by(Symbol)
     from_date = datetime.now() - timedelta(days=10*365)  # fetch market data for 10 years
     to_date = datetime.now() + timedelta(days=2)  # use a future date since there might be issues with timezones
     for (symbol, date) in query_result:
