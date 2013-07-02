@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 '''
-Utility functions
+Functions working with symbols
 '''
 from sqlalchemy.orm import sessionmaker
 import schema
