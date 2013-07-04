@@ -7,7 +7,7 @@ from sqlalchemy import Column, DateTime, Integer, String, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 
 
-engine = create_engine('sqlite:///marketdata.db', echo=True)
+engine = create_engine('sqlite:///marketdata.db', echo=False)
 Base = declarative_base()
 
 
