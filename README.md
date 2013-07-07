@@ -1,14 +1,11 @@
 Market Data
 ==========
-Library for working with Market Data. Currenty it supports only yahoo market data.
+Library for working with Market Data. Currenty it supports only yahoo market data and used MongoDB for storage.
 
-# DB creation
-import table_def
-able_def.create_all()
 
 # virtualenv setup
 ```
-virtualenv --distribute .
-source bin/activate
+virtualenv --system-site-packages --distribute venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
