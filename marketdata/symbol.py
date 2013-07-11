@@ -1,27 +1,32 @@
-# -*- coding:utf-8 -*-
+# coding:utf-8
 '''
 Functions working with symbols
 '''
-from sqlalchemy.orm import sessionmaker
-import schema
-from schema import Symbol, HistoricalPrice
+
+import pymongo
+
+
+def __symbols_collection():
+    conn = pymongo.MongoClient()
+    db = conn.marketdata
+    return db.symbols
 
 
 def add_symbols(symbols):
-    session = sessionmaker(bind=schema.engine)()
-    session.add_all([Symbol(x) for x in symbols])
-    session.commit()
+    sc = __symbols_collection()
+    for s in symbols:
+        sc.insert({'_id': s})
 
 
 def remove_symbols(symbols):
-    session = sessionmaker(bind=schema.engine)()
-    for x in symbols:
-        session.query(Symbol).filter_by(name = x).delete()
-        session.query(HistoricalPrice).filter_by(symbol = x).delete()
-    session.commit()
+    # removing symbols should remove market data as well
+    pass
 
 
 def symbols():
-    session = sessionmaker(bind=schema.engine)()
-    for s in session.query(Symbol):
-        yield s.name
+    pass
+
+
+def symbols_clean():
+    # market_data should be removed as well
+    pass

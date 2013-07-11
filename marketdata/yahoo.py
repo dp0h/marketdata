@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# coding:utf-8
 '''
 Yahoo Market Data API wrappers
 '''
