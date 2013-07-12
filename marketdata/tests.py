@@ -3,31 +3,39 @@
 
 import unittest
 from test import test_support
-from symbols import add_symbols, remove_symbols, symbols, clean_symbols
+from symbols import Symbols
+import pymongo
 
 
 class TestSymbols(unittest.TestCase):
     def setUp(self):
-        clean_symbols()
+        self.symbols = Symbols()
+
+        conn = pymongo.MongoClient()
+        db = conn.test_marketdata
+        symbols = db.test_symbols
+
+        self.symbols._symbols = symbols  # replace real db with test one
+        self.symbols.clean()
 
     def test_clean(self):
-        add_symbols(['AAPL'])
-        clean_symbols()
-        act = symbols()
+        self.symbols.add(['AAPL'])
+        self.symbols.clean()
+        act = self.symbols.symbols()
         self.assertEquals(0, len(act))
 
     def test_add(self):
         exp = ['AAPL']
-        add_symbols(exp)
-        act = [x['_id'] for x in symbols()]
+        self.symbols.add(exp)
+        act = [x['_id'] for x in self.symbols.symbols()]
         self.assertListEqual(exp, act)
 
     def test_remove(self):
         exp = ['AAPL']
         added = ['MSFT']
-        add_symbols(exp + added)
-        remove_symbols(added)
-        act = [x['_id'] for x in symbols()]
+        self.symbols.add(exp + added)
+        self.symbols.remove(added)
+        act = [x['_id'] for x in self.symbols.symbols()]
         self.assertListEqual(exp, act)
 
 

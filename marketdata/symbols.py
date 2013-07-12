@@ -6,28 +6,22 @@ Functions working with symbols
 import pymongo
 
 
-def __symbols_collection():
-    conn = pymongo.MongoClient()
-    db = conn.marketdata
-    return db.symbols
+class Symbols(object):
+    def __init__(self):
+        self._conn = pymongo.MongoClient()
+        self._db = self._conn.marketdata
+        self._symbols = self._db.symbols
 
+    def add(self, symbols):
+        for s in symbols:
+            self._symbols.insert({'_id': s, 'mdata': []})
 
-def add_symbols(symbols):
-    sc = __symbols_collection()
-    for s in symbols:
-        sc.insert({'_id': s, 'mdata': []})
+    def remove(self, symbols):
+        for s in symbols:
+            self._symbols.remove({'_id': s})
 
+    def symbols(self):
+        return [x for x in self._symbols.find({}, {'_id': 1})]
 
-def remove_symbols(symbols):
-    sc = __symbols_collection()
-    for s in symbols:
-        sc.remove({'_id': s})
-
-
-def symbols():
-    sc = __symbols_collection()
-    return [x for x in sc.find({}, {'_id': 1})]
-
-
-def clean_symbols():
-    __symbols_collection().drop()
+    def clean(self):
+        self._symbols.drop()
