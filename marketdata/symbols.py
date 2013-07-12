@@ -15,18 +15,19 @@ def __symbols_collection():
 def add_symbols(symbols):
     sc = __symbols_collection()
     for s in symbols:
-        sc.insert({'_id': s})
+        sc.insert({'_id': s, 'mdata': []})
 
 
 def remove_symbols(symbols):
-    # removing symbols should remove market data as well
-    pass
+    sc = __symbols_collection()
+    for s in symbols:
+        sc.remove({'_id': s})
 
 
 def symbols():
-    pass
+    sc = __symbols_collection()
+    return [x for x in sc.find({}, {'_id': 1})]
 
 
-def symbols_clean():
-    # market_data should be removed as well
-    pass
+def clean_symbols():
+    __symbols_collection().drop()
