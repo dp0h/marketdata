@@ -3,8 +3,10 @@
 
 import unittest
 from test import test_support
-from symbols import Symbols
 import pymongo
+from symbols import Symbols
+from yahoo import fetch_market_data
+from datetime import datetime
 
 
 class TestSymbols(unittest.TestCase):
@@ -39,5 +41,25 @@ class TestSymbols(unittest.TestCase):
         self.assertListEqual(exp, act)
 
 
+class TestMarketDataDb(object):
+    pass
+
+
+class YahooIntegrationTest(unittest.TestCase):
+    def test_AAPL_shares(self):
+        from_date = datetime(2012, 9, 20)
+        to_date = datetime(2012, 9, 21)
+        res, data = fetch_market_data('AAPL', from_date, to_date)
+        self.assertTrue(res)
+        self.assertEqual(2, len(data))
+        self.assertAlmostEquals(to_date, data[0][0])
+        self.assertAlmostEquals(705.07, data[0][2])
+
+    def test_unknown_symbol(self):
+        res, _ = fetch_market_data('XXX', datetime(2012, 9, 20), datetime(2012, 9, 21))
+        self.assertFalse(res)
+
+
 if __name__ == '__main__':
     test_support.run_unittest(TestSymbols)
+    test_support.run_unittest(YahooIntegrationTest)
