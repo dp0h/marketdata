@@ -41,10 +41,6 @@ class TestSymbols(unittest.TestCase):
         self.assertListEqual(exp, act)
 
 
-class TestMarketDataDb(object):
-    pass
-
-
 class YahooIntegrationTest(unittest.TestCase):
     def test_AAPL_shares(self):
         from_date = datetime(2012, 9, 20)
@@ -60,6 +56,36 @@ class YahooIntegrationTest(unittest.TestCase):
         self.assertFalse(res)
 
 
+class TestMarketDataDb(unittest.TestCase):
+    def setUp(self):
+        self.symbols = Symbols()
+
+        conn = pymongo.MongoClient()
+        db = conn.test_marketdata
+        symbols = db.test_symbols
+
+        self.symbols._symbols = symbols  # replace real db with test one
+        self.symbols.clean()
+        self.symbols.add(['AAPL'])
+
+    def test_single_hist_price(self):
+        dt = datetime(2013, 7, 13)
+        self.symbols.insert_historical_prices('AAPL', [(dt, 100.0, 101.0, 99.0, 100.0, 100, 100.0)])
+        res = self.symbols.select_historical_prices('AAPL', dt, dt)
+        self.assertEqual(1, len(res))
+        self.assertEqual(dt, res[0]['data'])
+        self.assertEqual(100.0, res[0]['open'])
+        self.assertEqual(101.0, res[0]['high'])
+        self.assertEqual(99.0, res[0]['low'])
+        self.assertEqual(100.0, res[0]['close'])
+        self.assertEqual(100, res[0]['volume'])
+        self.assertEqual(100.0, res[0]['adj_close'])
+
+    def test_two_hist_price(self):
+        pass
+
+
 if __name__ == '__main__':
-    test_support.run_unittest(TestSymbols)
-    test_support.run_unittest(YahooIntegrationTest)
+    #test_support.run_unittest(TestSymbols)
+    #test_support.run_unittest(YahooIntegrationTest)
+    test_support.run_unittest(TestMarketDataDb)

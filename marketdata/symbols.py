@@ -25,3 +25,18 @@ class Symbols(object):
 
     def clean(self):
         self._symbols.drop()
+
+    def insert_historical_prices(self, symbol, data):
+        '''
+        data should have such format [(datetime, open , high, low, close, volume, adj_close)]
+        '''
+        mdata = [{'_id': x[0], 'open': x[1], 'high': x[2], 'low': x[3], 'close': x[4], 'volume': x[5], 'adj_close': x[6]} for x in data]
+        self._symbols.update({'_id': symbol}, {'$addToSet': {'mdata': mdata}})
+
+    def select_historical_prices(self, symbol, from_date, to_date):
+        res = self._symbols.aggregate([
+            {'$match': {'_id': symbol}},
+            {'$unwind': '$mdata'},
+            {'$match': {'mdata._id': {'$gte': from_date, '$lte': to_date}}}
+        ])
+        return res['result'][0]['mdata']
