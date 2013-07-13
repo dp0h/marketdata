@@ -31,12 +31,18 @@ class Symbols(object):
         data should have such format [(datetime, open , high, low, close, volume, adj_close)]
         '''
         mdata = [{'_id': x[0], 'open': x[1], 'high': x[2], 'low': x[3], 'close': x[4], 'volume': x[5], 'adj_close': x[6]} for x in data]
+        print(mdata)
         self._symbols.update({'_id': symbol}, {'$addToSet': {'mdata': mdata}})
 
     def select_historical_prices(self, symbol, from_date, to_date):
+        '''
+        result has the following format [{'_id': date, 'open': open, ...}]
+        '''
         res = self._symbols.aggregate([
             {'$match': {'_id': symbol}},
             {'$unwind': '$mdata'},
-            {'$match': {'mdata._id': {'$gte': from_date, '$lte': to_date}}}
+            {'$match': {'mdata._id': {'$gte': from_date, '$lte': to_date}}},
+            {'$sort': {'mdata._id': 1}}
         ])
-        return res['result'][0]['mdata']
+        print(res)
+        return [x['mdata'][0] for x in res['result']]
