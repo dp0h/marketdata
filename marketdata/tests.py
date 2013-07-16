@@ -85,7 +85,7 @@ class TestMarketDataDb(unittest.TestCase):
     def test_hist_price_for_undefined_date(self):
         dt = datetime(2013, 7, 13)
         res = self.symbols.select_historical_prices('AAPL', dt, dt)
-        self.assertEqual(None, res)
+        self.assertEqual([], res)
 
     def test_three_hist_price(self):
         d1 = datetime(2013, 7, 13)

@@ -43,7 +43,7 @@ class Symbols(object):
             {'$match': {'mdata.date': {'$gte': from_date, '$lte': to_date}}},
             {'$sort': {'mdata.date': 1}}
         ])
-        return [x['mdata'] for x in res['result']] if len(res['result']) > 0 else None
+        return [x['mdata'] for x in res['result']]
 
     def last_date(self, symbol):
         '''

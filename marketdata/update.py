@@ -21,9 +21,7 @@ def update_marketdata(from_date=None, to_date=None, sym=Symbols()):
         fdate = date + timedelta(days=1) if date is not None else from_date
         (res, data) = yahoo.fetch_market_data(s, fdate, to_date)
         if res:
-            sym.insert_historical_prices(s, data)
-            #session.add_all([HistoricalPrice(x[0], symbol.name, x[1], x[2], x[3], x[4], x[5], x[6]) for x in data])
-            #session.commit()
+            sym.insert_historical_prices(s, [(x[0], x[1], x[2], x[3], x[4], x[5], x[6]) for x in data])
         else:
             # There are several reasons update can fail: 1. No new data; 2. wrong symbol; 3. Other reason.
             print('Failed updating symbol %s' % s)
