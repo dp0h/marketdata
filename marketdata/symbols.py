@@ -43,4 +43,17 @@ class Symbols(object):
             {'$match': {'mdata.date': {'$gte': from_date, '$lte': to_date}}},
             {'$sort': {'mdata.date': 1}}
         ])
-        return [x['mdata'] for x in res['result']]
+        return [x['mdata'] for x in res['result']] if len(res['result']) > 0 else None
+
+    def last_date(self, symbol):
+        '''
+        retrieves the last date for the symbol
+
+        '''
+        res = self._symbols.aggregate([
+            {'$match': {'_id': symbol}},
+            {'$unwind': '$mdata'},
+            {'$sort': {'mdata.date': -1}},
+            {'$limit': 1}
+        ])
+        return res['result'][0]['mdata']['date'] if len(res['result']) > 0 else None

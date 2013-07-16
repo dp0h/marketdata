@@ -4,9 +4,10 @@
 import unittest
 from test import test_support
 import pymongo
+from datetime import datetime
 from symbols import Symbols
 from yahoo import fetch_market_data
-from datetime import datetime
+from update import update_marketdata
 
 
 class TestSymbols(unittest.TestCase):
@@ -17,7 +18,7 @@ class TestSymbols(unittest.TestCase):
         db = conn.test_marketdata
         symbols = db.test_symbols
 
-        self.symbols._symbols = symbols  # replace real db with test one
+        self.symbols._symbols = symbols  # replaces real db with test one
         self.symbols.clean()
 
     def test_clean(self):
@@ -64,7 +65,7 @@ class TestMarketDataDb(unittest.TestCase):
         db = conn.test_marketdata
         symbols = db.test_symbols
 
-        self.symbols._symbols = symbols  # replace real db with test one
+        self.symbols._symbols = symbols  # replaces real db with test one
         self.symbols.clean()
         self.symbols.add(['AAPL'])
 
@@ -80,6 +81,11 @@ class TestMarketDataDb(unittest.TestCase):
         self.assertEqual(100.0, res[0]['close'])
         self.assertEqual(100, res[0]['volume'])
         self.assertEqual(100.0, res[0]['adj_close'])
+
+    def test_hist_price_for_undefined_date(self):
+        dt = datetime(2013, 7, 13)
+        res = self.symbols.select_historical_prices('AAPL', dt, dt)
+        self.assertEqual(None, res)
 
     def test_three_hist_price(self):
         d1 = datetime(2013, 7, 13)
@@ -130,8 +136,45 @@ class TestMarketDataDb(unittest.TestCase):
         self.assertEqual(d3, res[2]['date'])
         self.assertEqual(99.0, res[2]['open'])
 
+    def test_last_date(self):
+        d = [datetime(2013, 7, 16), datetime(2013, 7, 14), datetime(2013, 7, 13),  datetime(2013, 7, 17), datetime(2013, 7, 12),  datetime(2013, 7, 15)]
+        for x in d:
+            self.symbols.insert_historical_prices('AAPL', [(x, 1.0, 1.0, 1.0, 1.0, 1, 1.0)])
+        res = self.symbols.last_date('AAPL')
+        self.assertEquals(datetime(2013, 7, 17), res)
+
+    def test_last_date_when_no_data(self):
+        res = self.symbols.last_date('AAPL')
+        self.assertEquals(None, res)
+
+
+class UpdateMarketDataIntegrationTest(unittest.TestCase):
+    def setUp(self):
+        self.symbols = Symbols()
+
+        conn = pymongo.MongoClient()
+        db = conn.test_marketdata
+        symbols = db.test_symbols
+
+        self.symbols._symbols = symbols  # replaces real db with test one
+        self.symbols.clean()
+        self.symbols.add(['AAPL'])
+
+    def test_update_marketdata(self):
+        from_date = datetime(2012, 9, 20)
+        to_date = datetime(2012, 9, 21)
+        update_marketdata(from_date, to_date, self.symbols)
+
+        res = self.symbols.select_historical_prices('AAPL', from_date, to_date)
+        self.assertEqual(2, len(res))
+        self.assertEqual(from_date, res[0]['date'])
+        self.assertEqual(705.07, res[0]['high'])
+        self.assertEqual(to_date, res[1]['date'])
+        self.assertEqual(705.07, res[1]['high'])
+
 
 if __name__ == '__main__':
     test_support.run_unittest(TestSymbols)
     test_support.run_unittest(YahooIntegrationTest)
     test_support.run_unittest(TestMarketDataDb)
+    test_support.run_unittest(UpdateMarketDataIntegrationTest)
