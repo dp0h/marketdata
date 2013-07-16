@@ -30,16 +30,14 @@ class TestSymbols(unittest.TestCase):
     def test_add(self):
         exp = ['AAPL']
         self.symbols.add(exp)
-        act = [x['_id'] for x in self.symbols.symbols()]
-        self.assertListEqual(exp, act)
+        self.assertListEqual(exp, self.symbols.symbols())
 
     def test_remove(self):
         exp = ['AAPL']
         added = ['MSFT']
         self.symbols.add(exp + added)
         self.symbols.remove(added)
-        act = [x['_id'] for x in self.symbols.symbols()]
-        self.assertListEqual(exp, act)
+        self.assertListEqual(exp, self.symbols.symbols())
 
 
 class YahooIntegrationTest(unittest.TestCase):
@@ -168,7 +166,6 @@ class UpdateMarketDataIntegrationTest(unittest.TestCase):
         res = self.symbols.select_historical_prices('AAPL', from_date, to_date)
         self.assertEqual(2, len(res))
         self.assertEqual(from_date, res[0]['date'])
-        self.assertEqual(705.07, res[0]['high'])
         self.assertEqual(to_date, res[1]['date'])
         self.assertEqual(705.07, res[1]['high'])
 

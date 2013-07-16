@@ -21,7 +21,7 @@ class Symbols(object):
             self._symbols.remove({'_id': s})
 
     def symbols(self):
-        return [x for x in self._symbols.find({}, {'_id': 1})]
+        return [x['_id'] for x in self._symbols.find({}, {'_id': 1})]
 
     def clean(self):
         self._symbols.drop()
